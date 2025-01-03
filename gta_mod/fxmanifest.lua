@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'Ito Keisuke'
-description 'Toggle player names display with a menu.'
+author 'jyup'
+description 'サーバーサイドのみでプレイヤー名表示のオン/オフを管理'
 version '1.0.0'
 
-client_script 'client.lua'
+server_script 'client.lua'

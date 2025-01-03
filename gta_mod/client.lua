@@ -1,30 +1,38 @@
 local playerNameVisibility = {}
 
-AddEventHandler('playerConnecting', function()
-    local src = source
-    playerNameVisibility[src] = true
-end)
-
-RegisterCommand('toggleNames', function(source, args, rawCommand)
-    local src = source
-
-    if playerNameVisibility[src] == nil or playerNameVisibility[src] == false then
-        playerNameVisibility[src] = true
-        TriggerClientEvent('toggleNames:update', -1, src, true)
-        TriggerClientEvent('chat:addMessage', src, { args = { "Server", "プレイヤー名の表示をオンにしました。" } })
-    else
-        playerNameVisibility[src] = false
-        TriggerClientEvent('toggleNames:update', -1, src, false)
-        TriggerClientEvent('chat:addMessage', src, { args = { "Server", "プレイヤー名の表示をオフにしました。" } })
-    end
-end, false)
-
 RegisterNetEvent('toggleNames:update')
-AddEventHandler('toggleNames:update', function(src, visibility)
-    playerNameVisibility[src] = visibility
+AddEventHandler('toggleNames:update', function(targetPlayer, visible)
+    playerNameVisibility[targetPlayer] = visible
+
+    CreateThread(function()
+        while playerNameVisibility[targetPlayer] do
+            Wait(0)
+            local ped = GetPlayerPed(GetPlayerFromServerId(targetPlayer))
+            if ped ~= PlayerPedId() then
+                local x, y, z = table.unpack(GetEntityCoords(ped))
+                z = z + 1.0
+                local playerName = GetPlayerName(GetPlayerFromServerId(targetPlayer))
+                DrawText3D(x, y, z, playerName)
+            end
+        end
+    end)
 end)
 
-AddEventHandler('playerDropped', function()
-    local src = source
-    playerNameVisibility[src] = nil
-end)
+function DrawText3D(x, y, z, text)
+    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+    local px, py, pz = table.unpack(GetGameplayCamCoords())
+    local dist = #(vector3(px, py, pz) - vector3(x, y, z))
+
+    local scale = 1 / dist * 2
+    local fov = (1 / GetGameplayCamFov()) * 100
+    scale = scale * fov
+
+    if onScreen then
+        SetTextScale(0.35, 0.35)
+        SetTextFont(4)
+        SetTextProportional(1)
+        SetTextEntry("STRING")
+        AddTextComponentString(text)
+        DrawText(_x, _y)
+    end
+end

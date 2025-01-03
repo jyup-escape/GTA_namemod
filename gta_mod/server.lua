@@ -1,26 +1,12 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-local playerNameVisibility = {}
+local arguments = {
+    { name = 'greeting', help = 'Enter a greeting message' }
+}
 
-QBCore.Commands.Add('toggleNames', 'プレイヤー名の表示/非表示を切り替える', {}, false, function(source, args)
-    local src = source
+local argsRequired = true -- 引数が必須かどうか
 
-    if playerNameVisibility[src] == nil or playerNameVisibility[src] == false then
-        playerNameVisibility[src] = true
-        TriggerClientEvent('toggleNames:update', -1, src, true)
-        TriggerClientEvent('chat:addMessage', src, { args = { "Server", "プレイヤー名の表示をオンにしました。" } })
-    else
-        playerNameVisibility[src] = false
-        TriggerClientEvent('toggleNames:update', -1, src, false)
-        TriggerClientEvent('chat:addMessage', src, { args = { "Server", "プレイヤー名の表示をオフにしました。" } })
-    end
-end)
-
-RegisterNetEvent('toggleNames:update')
-AddEventHandler('toggleNames:update', function(src, visibility)
-    playerNameVisibility[src] = visibility
-end)
-
-AddEventHandler('playerDropped', function()
-    local src = source
-    playerNameVisibility[src] = nil
-end)
+QBCore.Commands.Add('hi', 'Send a greeting message', arguments, argsRequired, function(source, args)
+    local greeting = args[1] or 'hi'  -- 引数がなければデフォルトで 'hi' を返す
+    TriggerClientEvent('chat:addMessage', source, {
+        args = { '^1Server', greeting }
+    })
+end, 'user')

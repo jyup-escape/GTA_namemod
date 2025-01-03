@@ -2,7 +2,9 @@ fx_version 'cerulean'
 game 'gta5'
 
 author 'jyup'
-description 'サーバーサイドのみでプレイヤー名表示のオン/オフを管理'
+description 'QBCoreベースでプレイヤー名の表示切り替えを実装'
 version '1.0.0'
 
-server_script 'client.lua'
+shared_script '@qb-core/shared.lua'
+server_script 'server.lua'
+client_script 'client.lua'

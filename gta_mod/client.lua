@@ -61,3 +61,7 @@ function Notify(text)
     AddTextComponentString(text)
     DrawNotification(false, true)
 end
+--[[
+    © 2025 jyup
+    Toggle player names display with a menu.
+--]]
